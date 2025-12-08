@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Kimarah/Kimarah.unity
+    guid: ed5849aaaf4cd460c81d97c92603e7c9
   m_configObjects: {}
