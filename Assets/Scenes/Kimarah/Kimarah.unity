@@ -426,7 +426,6 @@ Transform:
   - {fileID: 446879254}
   - {fileID: 2086922334}
   - {fileID: 709223935}
-  - {fileID: 1839287895}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &205471990
@@ -1333,7 +1332,7 @@ MonoBehaviour:
   requestBodyTrackingPermissionOnStartup: 0
   requestFaceTrackingPermissionOnStartup: 0
   requestEyeTrackingPermissionOnStartup: 0
-  requestScenePermissionOnStartup: 0
+  requestScenePermissionOnStartup: 1
   requestRecordAudioPermissionOnStartup: 0
   requestPassthroughCameraAccessPermissionOnStartup: 0
   _localDimming: 1
@@ -1392,9 +1391,9 @@ Transform:
   m_GameObject: {fileID: 1365713043}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: -7.42, y: 8.5, z: 5.3999996}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -7.42, y: 2.1, z: 5.3999996}
+  m_LocalScale: {x: 9.97, y: 9.97, z: 9.97}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1489490863}
   - {fileID: 345613555}
@@ -1732,38 +1731,6 @@ Transform:
   - {fileID: 21591536}
   m_Father: {fileID: 205471991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1839287894
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1839287895}
-  m_Layer: 0
-  m_Name: Logs
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1839287895
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1839287894}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.62, y: 0.0028270222, z: -4.8999996}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1891767103}
-  m_Father: {fileID: 188773541}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1891767102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1777,6 +1744,7 @@ GameObject:
   - component: {fileID: 1891767106}
   - component: {fileID: 1891767105}
   - component: {fileID: 1891767104}
+  - component: {fileID: 1891767108}
   m_Layer: 0
   m_Name: Big Halff Log.001
   m_TagString: Untagged
@@ -1793,12 +1761,12 @@ Transform:
   m_GameObject: {fileID: 1891767102}
   serializedVersion: 2
   m_LocalRotation: {x: 0.005070503, y: 0.00710231, z: 0.58102065, w: 0.81384206}
-  m_LocalPosition: {x: -0.4500003, y: -0.44282702, z: 5.299999}
+  m_LocalPosition: {x: -12.4, y: 2.7, z: 9.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 58684989}
-  m_Father: {fileID: 1839287895}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 1, z: 71.048}
 --- !u!114 &1891767104
 MonoBehaviour:
@@ -1899,6 +1867,29 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891767102}
   m_Mesh: {fileID: -3399625907370689076, guid: a3d336768a44b034d9d021a6d56295c0, type: 3}
+--- !u!136 &1891767108
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1891767102}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.61434805
+  m_Height: 3.6745276
+  m_Direction: 1
+  m_Center: {x: -0.33792222, y: 0.00025141082, z: 0.036471605}
 --- !u!1 &1895668264
 GameObject:
   m_ObjectHideFlags: 0
@@ -2348,7 +2339,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -10.22, y: -1.6, z: -12.9}
-  m_LocalScale: {x: -31.36219, y: -1.6140286, z: -41.48662}
+  m_LocalScale: {x: -116.629715, y: -1.6140286, z: -421.1307}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 188773541}
@@ -2443,3 +2434,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 33540974}
   - {fileID: 188773541}
+  - {fileID: 1891767103}
