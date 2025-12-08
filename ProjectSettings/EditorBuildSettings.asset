@@ -4,15 +4,6 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-<<<<<<< Updated upstream
-  m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/Kimarah/Kimarah.unity
-    guid: ed5849aaaf4cd460c81d97c92603e7c9
-  m_configObjects: {}
-=======
   m_Scenes: []
   m_configObjects:
-    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 96371182da8e94eb7ae548a04985cd09, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 78bd2aac4276446dfa7d4cf8f1e647bb, type: 2}
->>>>>>> Stashed changes
