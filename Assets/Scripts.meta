@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scripts.meta
 guid: b665885123ad848c3b0bba2db45d1a17
+========
+guid: f443472ff71a64437a06d5d77835110b
+>>>>>>>> be2943e0238ef34afef3dfba088d04ab2796adda:Assets/CLASS SCENES/Mary.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
