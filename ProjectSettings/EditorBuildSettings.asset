@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Kimarah/Kimarah.unity
     guid: ed5849aaaf4cd460c81d97c92603e7c9
   - enabled: 1
-    path: Assets/Scenes/Final scene.unity
+    path: Assets/Scenes/Final scene/Final scene.unity
     guid: 709c6e0706fbf4effbcbe13e51b192b0
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: c917382c836d14ef0827857580ab1c3b, type: 2}
