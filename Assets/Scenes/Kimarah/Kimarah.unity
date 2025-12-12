@@ -956,7 +956,7 @@ GameObject:
   - component: {fileID: 293362669}
   m_Layer: 0
   m_Name: Big Halff Log.001 (4)
-  m_TagString: Untagged
+  m_TagString: Log
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1694,7 +1694,7 @@ GameObject:
   - component: {fileID: 659151965}
   m_Layer: 0
   m_Name: Big Halff Log.001 (2)
-  m_TagString: Untagged
+  m_TagString: Log
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1853,7 +1853,7 @@ GameObject:
   - component: {fileID: 664937194}
   m_Layer: 0
   m_Name: Big Halff Log.001 (1)
-  m_TagString: Untagged
+  m_TagString: Log
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2268,7 +2268,7 @@ GameObject:
   - component: {fileID: 1169651535}
   m_Layer: 0
   m_Name: Big Halff Log.001 (3)
-  m_TagString: Untagged
+  m_TagString: Log
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3147,16 +3147,77 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4066532291558417891, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4066532291558417891, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
+      propertyPath: InitialModule.startSize.minScalar
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2552097750653806158, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1572475744}
+    - targetCorrespondingSourceObject: {fileID: 2552097750653806158, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1572475745}
   m_SourcePrefab: {fileID: 100100000, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
 --- !u!4 &1572475741 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2891609810660982004, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
   m_PrefabInstance: {fileID: 1572475740}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &1572475742 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 4066532291558417891, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
+  m_PrefabInstance: {fileID: 1572475740}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1572475743 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2552097750653806158, guid: b7ff664a6240de441a3bd08f2710b3e5, type: 3}
+  m_PrefabInstance: {fileID: 1572475740}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1572475744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572475743}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a5108ea44dab4147a604b9b483718d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireParticleSystem: {fileID: 1572475742}
+  sizeIncreasePerLog: 0.3
+  baseFireSize: 0.5
+  maxFireSize: 5
+--- !u!65 &1572475745
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1572475743}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6, y: 8, z: 6}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1572731734
 GameObject:
   m_ObjectHideFlags: 0
@@ -3204,7 +3265,7 @@ GameObject:
   - component: {fileID: 1665455924}
   m_Layer: 0
   m_Name: Big Halff Log.001 (5)
-  m_TagString: Untagged
+  m_TagString: Log
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3532,7 +3593,7 @@ GameObject:
   - component: {fileID: 1891767108}
   m_Layer: 0
   m_Name: Big Halff Log.001
-  m_TagString: Untagged
+  m_TagString: Log
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
