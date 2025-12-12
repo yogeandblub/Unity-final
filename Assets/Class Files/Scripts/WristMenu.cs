@@ -4,45 +4,61 @@ using UnityEngine;
 public class WristMenu : MonoBehaviour
 {
     [Header("References")]
-    public Transform head;    // CenterEyeAnchor
-    public Transform hand;    // LeftHandAnchor
+    public Transform head;         // CenterEyeAnchor
+    public Transform wrist;        // LeftHandAnchor (wrist-ish)
 
-    [Header("Offsets")]
-    public float distanceFromHand = 0.15f;
-    public float heightOffset = 0.05f;
-    public float smoothFollow = 10f;
-
-    [Header("State")]
-    public bool visible = true;
+    [Header("Head-locked target")]
+    public float headDistance = 0.6f;      // how far in front of face
+    public float headHeightOffset = -0.05f; // a little below eye level
+    public float moveSpeed = 5f;           // speed of fly-from-wrist animation
 
     private Canvas _canvas;
+
+    private enum State { Hidden, MovingToHead, Shown }
+    private State _state = State.Hidden;
+
+    private Vector3 _targetPos;
 
     private void Awake()
     {
         _canvas = GetComponent<Canvas>();
-        _canvas.enabled = visible;   // set once when we start
+        _canvas.enabled = false;          // start hidden
     }
 
     private void LateUpdate()
     {
-        if (head == null || hand == null) return;
-        if (!visible) return;        // only move when visible (optional)
+        if (head == null || wrist == null) return;
+        if (_state == State.Hidden) return;
 
-        // Position slightly above & in front of the hand
-        Vector3 handPos = hand.position;
-        Vector3 toHead = (head.position - handPos).normalized;
+        // target in front of head (head-locked)
+        Vector3 flatForward = head.forward;
+        flatForward.y = 0f;
+        flatForward.Normalize();
 
-        Vector3 targetPos = handPos
-                            + Vector3.up * heightOffset
-                            + toHead * distanceFromHand;
+        _targetPos = head.position
+                    + flatForward * headDistance
+                    + Vector3.up * headHeightOffset;
 
-        transform.position = Vector3.Lerp(
-            transform.position,
-            targetPos,
-            Time.deltaTime * smoothFollow
-        );
+        if (_state == State.MovingToHead)
+        {
+            transform.position = Vector3.Lerp(
+                transform.position,
+                _targetPos,
+                Time.deltaTime * moveSpeed
+            );
 
-        // Face the head
+            if (Vector3.Distance(transform.position, _targetPos) < 0.01f)
+            {
+                _state = State.Shown;
+            }
+        }
+        else if (_state == State.Shown)
+        {
+            // stick in front of face
+            transform.position = _targetPos;
+        }
+
+        // always face the head
         Vector3 lookPos = head.position;
         lookPos.y = transform.position.y;
         transform.LookAt(lookPos);
@@ -51,15 +67,26 @@ public class WristMenu : MonoBehaviour
 
     public void ToggleMenu()
     {
-        visible = !visible;
-        _canvas.enabled = visible;
-        Debug.Log($"[WristMenu] Canvas enabled = {visible}");
-    }
+        if (_state == State.Hidden)
+        {
+            // spawn near wrist, pointing out from wrist
+            Vector3 wristForward = wrist.forward;
+            wristForward.y = 0f;
+            wristForward.Normalize();
 
-    public void SetVisible(bool value)
-    {
-        visible = value;
-        _canvas.enabled = visible;
-        Debug.Log($"[WristMenu] SetVisible({value})");
+            transform.position = wrist.position
+                               + wristForward * 0.10f   // 10cm out
+                               + Vector3.up * 0.03f;    // a bit above wrist
+
+            _canvas.enabled = true;
+            _state = State.MovingToHead;
+            Debug.Log("[WristMenu] Open - moving to head");
+        }
+        else
+        {
+            _canvas.enabled = false;
+            _state = State.Hidden;
+            Debug.Log("[WristMenu] Closed");
+        }
     }
 }
