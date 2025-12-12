@@ -13,20 +13,22 @@ public class WristMenu : MonoBehaviour
     public float smoothFollow = 10f;
 
     [Header("State")]
-    public bool visible = false;
+    public bool visible = true;
+
     private Canvas _canvas;
 
     private void Awake()
     {
         _canvas = GetComponent<Canvas>();
-        _canvas.enabled = visible;
+        _canvas.enabled = visible;   // set once when we start
     }
 
     private void LateUpdate()
     {
-        if (!visible || head == null || hand == null) return;
+        if (head == null || hand == null) return;
+        if (!visible) return;        // only move when visible (optional)
 
-        // Position slightly above the wrist and towards the head
+        // Position slightly above & in front of the hand
         Vector3 handPos = hand.position;
         Vector3 toHead = (head.position - handPos).normalized;
 
@@ -34,25 +36,30 @@ public class WristMenu : MonoBehaviour
                             + Vector3.up * heightOffset
                             + toHead * distanceFromHand;
 
-        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * smoothFollow);
+        transform.position = Vector3.Lerp(
+            transform.position,
+            targetPos,
+            Time.deltaTime * smoothFollow
+        );
 
-        // Rotate UI to face the head
+        // Face the head
         Vector3 lookPos = head.position;
-        lookPos.y = transform.position.y; // keep UI level
+        lookPos.y = transform.position.y;
         transform.LookAt(lookPos);
-        transform.Rotate(0, 180f, 0); // flip so front faces you
+        transform.Rotate(0, 180f, 0);
     }
 
     public void ToggleMenu()
     {
         visible = !visible;
-        if (_canvas != null)
-            _canvas.enabled = visible;
-
-            // TEMP: test toggle with keyboard in Play Mode
-    if (Input.GetKeyDown(KeyCode.T))
-    {
-        ToggleMenu();
+        _canvas.enabled = visible;
+        Debug.Log($"[WristMenu] Canvas enabled = {visible}");
     }
+
+    public void SetVisible(bool value)
+    {
+        visible = value;
+        _canvas.enabled = visible;
+        Debug.Log($"[WristMenu] SetVisible({value})");
     }
 }
