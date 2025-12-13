@@ -6,6 +6,7 @@ public class WristMenu : MonoBehaviour
     [Header("References")]
     public Transform head;         // CenterEyeAnchor
     public Transform wrist;        // LeftHandAnchor (wrist-ish)
+    private Vector3 _originalScale; // Remember original scale of canvas
 
     [Header("Head-locked target")]
     public float headDistance = 0.6f;      // how far in front of face
@@ -19,10 +20,26 @@ public class WristMenu : MonoBehaviour
 
     private Vector3 _targetPos;
 
+    [Header("Hologram Motion")]
+    public float bobAmplitude = 0.02f;  // 2 cm
+    public float bobFrequency = 1.5f;   // speed of bob
+    private float _bobTime;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip openClip;
+    [SerializeField] private AudioClip closeClip;
+
+
     private void Awake()
     {
         _canvas = GetComponent<Canvas>();
         _canvas.enabled = false;          // start hidden
+
+        _originalScale = transform.localScale; // remember tiny world-space scale
+
+        if (audioSource == null)
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void LateUpdate()
@@ -47,6 +64,13 @@ public class WristMenu : MonoBehaviour
                 Time.deltaTime * moveSpeed
             );
 
+            // smooth scale back up to original
+            transform.localScale = Vector3.Lerp(
+            transform.localScale,
+            _originalScale,
+            Time.deltaTime * 6f
+             );
+
             if (Vector3.Distance(transform.position, _targetPos) < 0.01f)
             {
                 _state = State.Shown;
@@ -56,6 +80,11 @@ public class WristMenu : MonoBehaviour
         {
             // stick in front of face
             transform.position = _targetPos;
+
+             // hologram bob
+            _bobTime += Time.deltaTime * bobFrequency;
+            float bobOffset = Mathf.Sin(_bobTime) * bobAmplitude;
+            transform.position += Vector3.up * bobOffset;
         }
 
         // always face the head
@@ -78,15 +107,29 @@ public class WristMenu : MonoBehaviour
                                + wristForward * 0.10f   // 10cm out
                                + Vector3.up * 0.03f;    // a bit above wrist
 
+            // start slightly smaller than original
+            transform.localScale = _originalScale * 0.8f;
             _canvas.enabled = true;
             _state = State.MovingToHead;
+            _bobTime = 0f;
             Debug.Log("[WristMenu] Open - moving to head");
+
+            // 🔊 play open sound
+        if (audioSource != null && openClip != null)
+            audioSource.PlayOneShot(openClip);
+
+        Debug.Log("[WristMenu] Open - moving to head");
+    
         }
         else
         {
             _canvas.enabled = false;
             _state = State.Hidden;
             Debug.Log("[WristMenu] Closed");
+
+            // 🔊 play close sound
+            if (audioSource != null && closeClip != null)
+            audioSource.PlayOneShot(closeClip);
         }
     }
 }
