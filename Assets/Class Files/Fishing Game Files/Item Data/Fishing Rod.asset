@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42b7322ecf1aa4bc89c304e9990e47af, type: 3}
+  m_Name: Fishing Rod
+  m_EditorClassIdentifier: 
+  id: fishing_rod
+  displayName: Fishing Rod
+  description: Ol' reliable...
+  type: 0
+  icon: {fileID: 21300000, guid: 145ef0be9831d41b38ef594b9f01fec7, type: 3}
+  worldPrefab: {fileID: 8382105344214368263, guid: a1af88fe87f3444d48dd5777b3d2092d, type: 3}
+  equipToHand: 0
+  equippedPrefab: {fileID: 8382105344214368263, guid: a1af88fe87f3444d48dd5777b3d2092d, type: 3}

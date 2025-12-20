@@ -14,6 +14,6 @@ public class WristTapToggle : MonoBehaviour
 
         _lastToggleTime = Time.time;
         Debug.Log($"[WristTap] Trigger enter with {other.name}");
-        wristMenu.ToggleMenu();
+        wristMenu.Toggle();
     }
 }

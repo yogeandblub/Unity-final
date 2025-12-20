@@ -2,13 +2,12 @@ using UnityEngine;
 
 public class ItemWorld : MonoBehaviour
 {
-    public ItemData data;
-    public int amount = 1;
+    public ItemData Data { get; private set; }
+    public int Amount { get; private set; } = 1;
 
-    // Optional: helper to initialize in code
-    public void Init(ItemData itemData, int amt = 1)
+    public void Init(ItemData data, int amount = 1)
     {
-        data = itemData;
-        amount = amt;
+        Data = data;
+        Amount = Mathf.Max(1, amount);
     }
 }

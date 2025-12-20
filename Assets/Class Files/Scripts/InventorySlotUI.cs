@@ -1,103 +1,91 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class InventorySlotUI : MonoBehaviour,
-    IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+public class InventorySlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     [Header("Visuals")]
     [SerializeField] private Image iconImage;
-    [SerializeField] private TextMeshProUGUI amountText;
+    [SerializeField] private TMP_Text amountText;
 
-    [Header("Details Popup")]
-    public GameObject detailsPanel;              // e.g. a small panel
-    public TextMeshProUGUI detailsNameText;
-    public TextMeshProUGUI detailsDescriptionText;
-    public float holdThreshold = 0.5f;
+    [Header("Hold")]
+    [SerializeField] private float holdThreshold = 0.5f;
+
+    private InventoryUI _ui;
+    private int _index;
 
     private InventoryItem _item;
-    private InventoryUI _inventoryUI;
+    private bool _pressed;
+    private float _heldTime;
+    private bool _holdFired;
 
-    private bool _isHeld;
-    private float _holdTime;
+    public void Bind(InventoryUI ui, int index)
+    {
+        _ui = ui;
+        _index = index;
+    }
 
-    public void Setup(InventoryItem item, InventoryUI inventoryUI)
+    public void SetItem(InventoryItem item)
     {
         _item = item;
-        _inventoryUI = inventoryUI;
 
-        if (item != null && item.data != null)
+        bool hasItem = _item != null && _item.data != null && _item.amount > 0;
+
+        if (iconImage)
         {
-            iconImage.sprite = item.data.icon;
-            iconImage.enabled = true;
-            amountText.text = item.amount > 1 ? item.amount.ToString() : "";
-        }
-        else
-        {
-            iconImage.enabled = false;
-            amountText.text = "";
+            iconImage.enabled = hasItem && _item.data.icon != null;
+            iconImage.sprite = hasItem ? _item.data.icon : null;
         }
 
-        HideDetails();
-    }
-
-    public void OnClickSpawn()
-    {
-        if (_item == null || _item.data == null || _inventoryUI == null)
-            return;
-
-        _inventoryUI.SpawnItemFromSlot(_item);
-    }
-
-    // --- Pointer interfaces for tap vs hold ---
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        _isHeld = true;
-        _holdTime = 0f;
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (!_isHeld) return;
-        _isHeld = false;
-
-        // Short tap = spawn
-        if (_holdTime < holdThreshold)
-            OnClickSpawn();
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        _isHeld = false;
-        HideDetails();
+        if (amountText)
+        {
+            if (!hasItem) amountText.text = "";
+            else amountText.text = _item.amount > 1 ? _item.amount.ToString() : "";
+        }
     }
 
     private void Update()
     {
-        if (!_isHeld || _item == null || _item.data == null)
-            return;
+        if (!_pressed) return;
 
-        _holdTime += Time.deltaTime;
-        if (_holdTime >= holdThreshold)
-            ShowDetails();
+        _heldTime += Time.deltaTime;
+
+        if (!_holdFired && _heldTime >= holdThreshold)
+        {
+            _holdFired = true;
+            Debug.Log($"[SlotUI] Hold index={_index}");
+            _ui?.OnSlotHeld(_index);
+        }
     }
 
-    private void ShowDetails()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        if (detailsPanel == null) return;
+        if (_ui == null) return;
 
-        detailsPanel.SetActive(true);
-        if (detailsNameText != null)
-            detailsNameText.text = _item.data.displayName;
-        if (detailsDescriptionText != null)
-            detailsDescriptionText.text = _item.data.description;
+        _pressed = true;
+        _heldTime = 0f;
+        _holdFired = false;
+
+        Debug.Log($"[SlotUI] Down index={_index}");
     }
 
-    private void HideDetails()
+    public void OnPointerUp(PointerEventData eventData)
     {
-        if (detailsPanel != null)
-            detailsPanel.SetActive(false);
+        if (_ui == null) return;
+
+        Debug.Log($"[SlotUI] Up index={_index} holdFired={_holdFired}");
+
+        if (_pressed && !_holdFired)
+        {
+            _ui.OnSlotTapped(_index);
+        }
+
+        _pressed = false;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _pressed = false;
     }
 }

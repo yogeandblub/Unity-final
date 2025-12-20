@@ -2,20 +2,19 @@ using UnityEngine;
 
 public class InventoryAbsorbZone : MonoBehaviour
 {
-    public Inventory inventory;
-    public bool destroyOnAbsorb = true;
+    [SerializeField] private Inventory inventory;
+    [SerializeField] private float destroyDelay = 0f;
 
     private void OnTriggerEnter(Collider other)
     {
-        var itemWorld = other.GetComponent<ItemWorld>();
-        if (itemWorld == null || itemWorld.data == null || inventory == null)
-            return;
+        var itemWorld = other.GetComponentInParent<ItemWorld>();
+        if (!itemWorld || itemWorld.Data == null) return;
 
-        Debug.Log($"[InventoryAbsorb] {itemWorld.data.displayName} x{itemWorld.amount}");
+        inventory.AddItem(itemWorld.Data, itemWorld.Amount);
 
-        inventory.AddItem(itemWorld.data, itemWorld.amount);
+        if (destroyDelay <= 0f) Destroy(itemWorld.gameObject);
+        else Destroy(itemWorld.gameObject, destroyDelay);
 
-        if (destroyOnAbsorb)
-            Destroy(itemWorld.gameObject);
+        Debug.Log($"[AbsorbZone] Absorbed: {itemWorld.Data.displayName} x{itemWorld.Amount}");
     }
 }

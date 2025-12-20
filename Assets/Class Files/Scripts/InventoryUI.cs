@@ -1,30 +1,38 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Inventory inventory;
-    [SerializeField] private Transform slotsParent;   // Grid/Vertical Layout
-    [SerializeField] private GameObject slotPrefab;
+    [SerializeField] private Transform slotsParent;      // RectTransform parent with GridLayoutGroup
+    [SerializeField] private InventorySlotUI slotPrefab; // prefab with InventorySlotUI on root
+    [SerializeField] private EquipManager equipManager;
 
     [Header("Spawn Settings")]
-    public Transform head;       // CenterEyeAnchor
-    public float spawnDistance = 0.7f;
-    public float spawnHeightOffset = -0.1f;
+    [SerializeField] private Transform head;             // CenterEyeAnchor
+    [SerializeField] private float spawnDistance = 0.9f;
+    [SerializeField] private float spawnDownOffset = 0.1f;
 
-    private readonly List<InventorySlotUI> _slots = new();
+    [Header("Behavior")]
+    [SerializeField] private int fixedSlotCount = 8;     // 2x4
+    [SerializeField] private bool tapSpawnsIfNotEquipable = true;
+    [SerializeField] private bool rightHandEquip = true;
+
+    private InventorySlotUI[] _slots;
+
+    private void Awake()
+    {
+        BuildFixedSlots();
+    }
 
     private void OnEnable()
     {
-        if (inventory != null)
-            inventory.OnInventoryChanged += RefreshUI;
+        if (inventory) inventory.OnInventoryChanged += RefreshUI;
     }
 
     private void OnDisable()
     {
-        if (inventory != null)
-            inventory.OnInventoryChanged -= RefreshUI;
+        if (inventory) inventory.OnInventoryChanged -= RefreshUI;
     }
 
     private void Start()
@@ -32,54 +40,124 @@ public class InventoryUI : MonoBehaviour
         RefreshUI();
     }
 
-    private void ClearSlots()
+    private void BuildFixedSlots()
     {
-        foreach (Transform child in slotsParent)
-            Destroy(child.gameObject);
+        if (!slotsParent || !slotPrefab)
+        {
+            Debug.LogError("[InventoryUI] Missing slotsParent or slotPrefab.");
+            return;
+        }
 
-        _slots.Clear();
+        // Clear existing children (optional)
+        for (int i = slotsParent.childCount - 1; i >= 0; i--)
+            Destroy(slotsParent.GetChild(i).gameObject);
+
+        _slots = new InventorySlotUI[fixedSlotCount];
+
+        for (int i = 0; i < fixedSlotCount; i++)
+        {
+            var slot = Instantiate(slotPrefab, slotsParent);
+            slot.name = $"Slot_{i}";
+            slot.Bind(this, i);
+            _slots[i] = slot;
+        }
     }
 
     public void RefreshUI()
     {
-        if (inventory == null) return;
+        if (_slots == null || _slots.Length == 0) return;
 
-        ClearSlots();
+        // Fill slots from inventory list order
+        var items = inventory ? inventory.Items : null;
 
-        foreach (var item in inventory.Items)
+        for (int i = 0; i < _slots.Length; i++)
         {
-            var go = Instantiate(slotPrefab, slotsParent);
-            var slot = go.GetComponent<InventorySlotUI>();
-            slot.Setup(item, this);
-            _slots.Add(slot);
+            InventoryItem item = null;
+
+            if (items != null && i < items.Count)
+                item = items[i];
+
+            _slots[i].SetItem(item);
+        }
+
+        Debug.Log($"[InventoryUI] RefreshUI count={(items != null ? items.Count : 0)}");
+    }
+
+    public void OnSlotTapped(int slotIndex)
+    {
+        var item = GetItemAtSlot(slotIndex);
+        if (item == null || item.data == null) return;
+
+        Debug.Log($"[InventoryUI] Tapped slot {slotIndex}: {item.data.displayName}");
+
+        if (item.data.equipToHand && equipManager)
+        {
+            equipManager.Equip(item.data, rightHandEquip);
+            return; // do NOT consume item on equip
+        }
+
+        if (tapSpawnsIfNotEquipable)
+        {
+            SpawnAndConsume(slotIndex, 1);
         }
     }
 
-    public void SpawnItemFromSlot(InventoryItem item)
+    public void OnSlotHeld(int slotIndex)
     {
-        if (item == null || item.data == null || head == null)
-            return;
+        var item = GetItemAtSlot(slotIndex);
+        if (item == null || item.data == null) return;
 
-        bool removed = inventory.RemoveItem(item.data, 1);
-        if (!removed) return;
+        Debug.Log($"[InventoryUI] Held slot {slotIndex}: {item.data.displayName}");
+        SpawnAndConsume(slotIndex, 1);
+    }
 
-        // Spawn in front of head
-        Vector3 forward = head.forward;
-        forward.y = 0;
-        forward.Normalize();
+    private InventoryItem GetItemAtSlot(int slotIndex)
+    {
+        if (!inventory) return null;
+        var items = inventory.Items;
+        if (slotIndex < 0 || slotIndex >= items.Count) return null;
+        return items[slotIndex];
+    }
 
-        Vector3 spawnPos = head.position
-                         + forward * spawnDistance
-                         + Vector3.up * spawnHeightOffset;
+    private void SpawnAndConsume(int slotIndex, int amount)
+    {
+        var item = GetItemAtSlot(slotIndex);
+        if (item == null || item.data == null) return;
 
-        Quaternion rot = Quaternion.LookRotation(forward, Vector3.up);
-
-        if (item.data.worldPrefab != null)
+        if (!item.data.worldPrefab)
         {
-            var worldGO = Object.Instantiate(item.data.worldPrefab, spawnPos, rot);
-            var iw = worldGO.GetComponent<ItemWorld>();
-            if (iw != null)
-                iw.Init(item.data, 1);
+            Debug.LogError($"[InventoryUI] worldPrefab is NULL for: {item.data.displayName}");
+            return;
         }
+
+        if (!head)
+        {
+            Debug.LogError("[InventoryUI] Head transform not assigned (CenterEyeAnchor).");
+            return;
+        }
+
+        Vector3 spawnPos = head.position + head.forward * spawnDistance + Vector3.down * spawnDownOffset;
+        Quaternion spawnRot = Quaternion.identity;
+
+        var go = Instantiate(item.data.worldPrefab, spawnPos, spawnRot);
+        go.name = item.data.displayName + "_World";
+
+        // Mark it as an item (for absorb later)
+        var iw = go.GetComponent<ItemWorld>();
+        if (!iw) iw = go.AddComponent<ItemWorld>();
+        iw.Init(item.data, amount);
+
+        // Physics toggle
+        var rb = go.GetComponentInChildren<Rigidbody>();
+        if (rb)
+        {
+            rb.isKinematic = !item.data.spawnWithPhysics;
+            rb.useGravity = item.data.spawnWithPhysics;
+        }
+
+        // Consume after spawn
+        inventory.RemoveItem(item.data, amount);
+
+        Debug.Log($"[InventoryUI] Spawned {go.name} at {spawnPos}");
     }
 }
